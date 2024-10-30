@@ -15,10 +15,15 @@ public class MyList {
         }
 
         this.head = new House(other.head);
+        House newHouse = this.head;
+        House copiedHouse = other.head.getNext();
 
-        House newHouse = new House(head.getNext())
 
-
+        while(copiedHouse != null) {
+            newHouse.setNext(new House(copiedHouse));
+            newHouse = newHouse.getNext();
+            copiedHouse = copiedHouse.getNext();
+        }
 
     }
 
