@@ -1,6 +1,5 @@
 package org.example;
 
-import java.sql.SQLOutput;
 
 public class MyHashTable {
     private MyList[] buckets; // = new MyList[10];
@@ -13,9 +12,10 @@ public class MyHashTable {
         this.initSize = 4;
         this.buckets = new MyList[initSize];
         this.loadFactor = .75;
-        for(MyList bucket : buckets) {
-            bucket = new MyList();
+        for (int i = 0; i < buckets.length; i++) {
+            buckets[i] = new MyList();
         }
+
     }
 
     public MyHashTable (MyHashTable other) {
@@ -37,15 +37,17 @@ public class MyHashTable {
 
     public void add(House newHouse) {
         int length = this.buckets.length;
-        if((double) length / count > .75) {
-            resize();
+        if ((double) count / length > loadFactor) {
+            this.buckets = resize();
         }
-        int index = length % newHouse.hashCode();
+
+        int index = Math.abs(newHouse.hashCode()) % length;
         this.buckets[index].add(newHouse);
+        count++;
     }
 
     public House find(String owner) {
-        int index = this.buckets.length % owner.hashCode();
+        int index = Math.abs(owner.hashCode()) % this.buckets.length;
         return this.buckets[index].find(owner);
     }
 
@@ -61,8 +63,22 @@ public class MyHashTable {
         }
     }
 
-    private void resize() {
+    private MyList[] resize() {
+        MyList[] listArr = new MyList[this.buckets.length * 2];
+
+        for (int i = 0; i < listArr.length; i++) {
+            listArr[i] = new MyList();
+        }
+
+        for (MyList bucket : this.buckets) {
+            House temp = bucket.getHead();
+
+            while (temp != null) {
+                int hash = Math.abs(temp.hashCode()) % listArr.length;
+                listArr[hash].add(new House(temp));
+                temp = temp.getNext();
+            }
+        }
+        return listArr;
     }
-
-
 }

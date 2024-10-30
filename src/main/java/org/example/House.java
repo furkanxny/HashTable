@@ -119,7 +119,7 @@ public class House {
      */
     @Override
     public String toString() {
-        return "Owner: " + owner + ", Value: " + value;
+        return "Owner: " + owner + ", Value: " + value+" "+getOwner().hashCode();
     }
 
     @Override
